@@ -2,6 +2,7 @@ import React ,{PureComponent} from 'react';
 import { connect } from 'react-redux';
 import { CSSTransition } from 'react-transition-group';
 import  * as actionCreators  from './store/actionCreators';
+import * as actionCreactorsLogin from '../../pages/login/store/actionCreators';
 import { Link } from 'react-router-dom';
 import {
     HeaderWrapper,
@@ -57,7 +58,7 @@ class Header extends PureComponent{
     } 
 
     render(){
-        const {focuses,handleInputFocus,handleInputBlur,list} = this.props ;
+        const {focuses,handleInputFocus,handleInputBlur,list,login,logout} = this.props ;
         return(
             <div>
                <HeaderWrapper> 
@@ -66,7 +67,10 @@ class Header extends PureComponent{
                    <Nav>
                       <NavItem className="left active">首页</NavItem>
                       <NavItem className="left">下载App</NavItem>
-                      <Link to="/login"><NavItem className="right">登陆</NavItem></Link>
+                      {
+                          login ? <NavItem onClick={logout} className="right">退出</NavItem> 
+                          : <Link to="/login"><NavItem className="right">登陆</NavItem></Link>
+                      }
                       <NavItem className="right">
                           <i className="iconfont">&#xe636;</i>
                       </NavItem>
@@ -87,9 +91,11 @@ class Header extends PureComponent{
                       </SearchWrapper>
                    </Nav>
                    <Addition>
-                       <Button className="writting">
-                       <i className="iconfont">&#xe61c;</i>
-                           写文章</Button>
+                       <Link to="/write">
+                         <Button className="writting">
+                          <i className="iconfont">&#xe61c;</i>
+                             写文章</Button>
+                       </Link>
                        <Button className="reg">注册</Button>
                    </Addition>
                </HeaderWrapper>
@@ -105,6 +111,7 @@ const mapStateToProps = (state) => {
         list : state.get('header').get('list'),
         page : state.get('header').get('page'),
         totalPage: state.get('header').get('totalPage'),
+        login: state.get('login').get('login'),
         mouseIn: state.get('header').get('mouseIn')
         // focuses : state.getIn(['header','focuses'])
     }
@@ -141,6 +148,9 @@ const mapDispathToProps = (dispatch) => {
                 dispatch(actionCreators.changePage(1))
              }
             
+         },
+         logout(){
+             dispatch(actionCreactorsLogin.logout())
          }
     }
 }
